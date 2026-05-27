@@ -48,12 +48,6 @@ private:
 
 	};
 
-	struct Output {
-		AudioFrame vol;
-		int bus_index = 0;
-		Viewport *viewport = nullptr; //pointer only used for reference to previous mix
-	};
-
 	AudioStreamPlayerInternal *internal = nullptr;
 
 	SafeNumeric<float> setplay{ -1.0 };
@@ -74,7 +68,7 @@ private:
 
 	static void _listener_changed_cb(void *self) { reinterpret_cast<AudioStreamPlayer2D *>(self)->force_update_panning = true; }
 
-	uint32_t area_mask = 1;
+	uint32_t area_mask = 0;
 
 	float max_distance = 2000.0;
 	float attenuation = 1.0;

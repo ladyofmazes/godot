@@ -133,6 +133,7 @@ class EditorPropertyArray : public EditorProperty {
 	int reorder_to_index = -1;
 	float reorder_mouse_y_delta = 0.0f;
 	void initialize_array(Variant &p_array);
+	void _update_slots_size();
 
 	void _page_changed(int p_page);
 
@@ -240,7 +241,6 @@ class EditorPropertyDictionary : public EditorProperty {
 	PanelContainer *container = nullptr;
 	VBoxContainer *property_vbox = nullptr;
 	PanelContainer *add_panel = nullptr;
-	EditorSpinSlider *size_sliderv = nullptr;
 	Button *button_add_item = nullptr;
 	EditorPaginator *paginator = nullptr;
 	LocalVector<Slot> slots;

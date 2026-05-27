@@ -47,6 +47,9 @@ TranslationTemplateGenerator::MessageMap TranslationTemplateGenerator::parse(con
 
 		for (const Vector<String> &entry : parsed_from_file) {
 			ERR_CONTINUE(entry.is_empty());
+			if (entry[0].is_empty()) {
+				continue;
+			}
 
 			const String &msgctxt = (entry.size() > 1) ? entry[1] : String();
 			const String &msgid_plural = (entry.size() > 2) ? entry[2] : String();
@@ -64,8 +67,19 @@ TranslationTemplateGenerator::MessageMap TranslationTemplateGenerator::parse(con
 		}
 	}
 
+	if (GLOBAL_GET("application/config/name_localized").operator Dictionary().is_empty()) {
+		const String &project_name = GLOBAL_GET("application/config/name");
+		if (!project_name.is_empty()) {
+			raw.push_back({ project_name, String(), String(), String(), String() });
+		}
+	}
+
+	EditorTranslationParser::get_singleton()->customize_strings(raw);
+
 	MessageMap result;
-	for (const Vector<String> &entry : raw) {
+	for (Vector<String> &entry : raw) {
+		entry.resize(5); // Ensure size, in case the strings were customized.
+
 		const String &msgid = entry[0];
 		const String &msgctxt = entry[1];
 		const String &plural = entry[2];
@@ -95,7 +109,7 @@ void TranslationTemplateGenerator::generate(const String &p_file) {
 
 	const MessageMap &map = parse(files, add_builtin);
 	if (map.is_empty()) {
-		WARN_PRINT("No translatable strings found.");
+		WARN_PRINT_ED(TTR("No translatable strings found."));
 		return;
 	}
 
